@@ -5,10 +5,8 @@
 using namespace sockets;
 using namespace std;
 
-int main() {
-
+int main () {
     auto socket = sockets::socket(socket_family::IPV4, socket_type::STREAM, socket_protocol::TCP);
-
-    cout << socket.socket_fd << endl;
-
+    socket.set_port(8080);
+    return 0;
 }

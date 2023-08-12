@@ -62,7 +62,9 @@ namespace sockets {
 
         void send (char*);
 
-        void add_address ();
+        void set_family (socket_family);
+
+        void set_port (int);
 
         std::string receive();
         std::string receive_loop();
