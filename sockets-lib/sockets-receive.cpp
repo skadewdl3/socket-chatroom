@@ -7,7 +7,7 @@ using namespace sockets;
 
 string sockets::socket::receive() {
     char buffer[1000] = { 0 };
-    int receive_status = ::recv(this->socket_fd, buffer, sizeof(buffer), 0);
+    int receive_status = ::read(this->socket_fd, buffer, sizeof(buffer));
     if (receive_status < 0) {
         cout << "Error in receving data" << endl;
     }

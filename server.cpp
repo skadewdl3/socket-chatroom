@@ -14,9 +14,8 @@ int main() {
     socket.listen();
     auto client = socket.accept();
 
-    char buffer[1000];
-    read(client.get_socket_fd(), buffer, 1000);
-    cout << buffer << endl;
+    string res = client.receive();
+    cout << res << endl;
 
     socket.close();
 }
