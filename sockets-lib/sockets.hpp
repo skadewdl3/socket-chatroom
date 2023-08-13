@@ -6,8 +6,10 @@
 #include <netinet/in.h>
 #include <sys/time.h>
 #include <exception>
-
+#include <cstring>
 #define INTERNET AF_INET
+
+using namespace std;
 
 namespace sockets {
 
@@ -35,39 +37,48 @@ namespace sockets {
         UDPLITE = IPPROTO_UDPLITE
     };
 
-    class socket_address {
-    private:
-        sockaddr_in addr_data;
-    public:
-        int port;
-        explicit socket_address (int);
-        socket_address ();
-        socket_address (int, socket_family);
-        sockaddr_in get_addr_data();
-    };
 
     class socket {
     private:
         socket_family family;
         socket_protocol protocol;
         socket_type type;
+        int port;
         int max_pending_connections = 5;
-        socket_address address;
+        sockaddr_in address;
+        int socket_fd; // move this to provate later
+
+        void send (const char*, size_t);
+        void set_socket_fd (int);
+        void refresh_socket ();
 
     public:
-        int socket_fd; // move this to provate later
         explicit socket (socket_family, socket_type, socket_protocol);
 
-        void send (std::string);
-
-        void send (char*);
-
+        // Setters
         void set_family (socket_family);
-
         void set_port (int);
+        void set_protocol (socket_protocol);
+        void set_type (socket_type);
 
-        std::string receive();
-        std::string receive_loop();
+        // Getters
+        int get_socket_fd ();
+
+        // Common Functions
+        void send (std::string);
+        void send (char*);
+        void close();
+        string receive();
+        void receive_loop();
+
+        // Server Functions
+        void bind ();
+        void listen();
+        socket accept();
+
+        // Client Functions
+        void connect ();
+
     };
 
 }
