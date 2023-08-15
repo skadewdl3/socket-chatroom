@@ -5,7 +5,6 @@ using namespace sockets;
 
 
 sockets::socket::socket(socket_family family, socket_type type, socket_protocol protocol) {
-    std::cout << "Creating socket" << std::endl;
     this->family = family;
     this->type = type;
     this->protocol = protocol;
@@ -14,12 +13,27 @@ sockets::socket::socket(socket_family family, socket_type type, socket_protocol 
     // Create the socket
     this->socket_fd = ::socket(family, type, protocol);
     if (this->socket_fd < 1) cout << "Error in creating socket" << endl;
-    // TODO: add try-catch block later
+    // TODO: Add exception handling
 
     this->address.sin_family = socket_family::IPV4;
     this->address.sin_addr.s_addr = INADDR_ANY;
     this->address.sin_port = htons(this->port);
+}
 
+sockets::socket::socket(socket_family family, socket_type type, socket_protocol protocol, char* addr) {
+    this->family = family;
+    this->type = type;
+    this->protocol = protocol;
+    this->port = -1;
+
+    // Create the socket
+    this->socket_fd = ::socket(family, type, protocol);
+    if (this->socket_fd < 1) cout << "Error in creating socket" << endl;
+    // TODO: Add exception handling
+
+    this->address.sin_family = socket_family::IPV4;
+    this->address.sin_addr.s_addr = inet_addr(addr);
+    this->address.sin_port = htons(this->port);
 }
 
 void sockets::socket::refresh_socket () {
@@ -52,6 +66,10 @@ int sockets::socket::get_socket_fd () {
 void sockets::socket::set_port (int new_port) {
     this->port = new_port;
     this->address.sin_port = htons(new_port);
+}
+
+void sockets::socket::set_address (char* addr) {
+    this->address.sin_addr.s_addr = inet_addr(addr);
 }
 
 void sockets::socket::set_socket_fd (int new_socket_fd) {

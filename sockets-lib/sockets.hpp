@@ -9,6 +9,9 @@
 #include <cstring>
 #include <vector>
 #include <optional>
+#include <arpa/inet.h>
+#include <sys/types.h>
+#include <netdb.h>
 
 #define INTERNET AF_INET
 
@@ -63,7 +66,8 @@ namespace sockets {
         void refresh_socket ();
 
     public:
-        explicit socket (socket_family, socket_type, socket_protocol);
+        socket (socket_family, socket_type, socket_protocol);
+        socket (socket_family, socket_type, socket_protocol, char*);
         int status ();
 
         // Setters
@@ -72,6 +76,7 @@ namespace sockets {
         void set_protocol (socket_protocol);
         void set_type (socket_type);
         void set_socket_fd (int);
+        void set_address(char*);
 
         // Getters
         int get_socket_fd ();
@@ -85,7 +90,8 @@ namespace sockets {
         // Server Functions
         void bind ();
         void listen();
-        socket accept();
+
+        virtual socket accept();
 
         // Client Functions
         void connect ();
@@ -100,7 +106,8 @@ namespace sockets {
         int refresh_connections();
         bool should_accept = true;
     public:
-        master_socket (socket_family family, socket_type type, socket_protocol protocol);
+        master_socket (socket_family, socket_type, socket_protocol);
+        master_socket (socket_family, socket_type, socket_protocol, char*);
         socket accept();
         void stop_accepting ();
         void accept_loop(accept_loop_callback);

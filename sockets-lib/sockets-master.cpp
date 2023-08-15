@@ -4,6 +4,9 @@
 sockets::master_socket::master_socket (socket_family family, socket_type type, socket_protocol protocol) : socket(family, type, protocol) {
 }
 
+sockets::master_socket::master_socket (socket_family family, socket_type type, socket_protocol protocol, char* address) : socket(family, type, protocol, address) {
+}
+
 int sockets::master_socket::refresh_connections () {
     int max_fd = this->socket_fd;
     FD_SET(this->socket_fd, &this->fds);
