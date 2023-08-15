@@ -12,5 +12,6 @@ int main () {
     socket.connect();
     char message[] = "Hello World";
     socket.send(message);
+    socket.close();
     return 0;
 }

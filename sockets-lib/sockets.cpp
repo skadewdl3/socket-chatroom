@@ -9,6 +9,7 @@ sockets::socket::socket(socket_family family, socket_type type, socket_protocol 
     this->family = family;
     this->type = type;
     this->protocol = protocol;
+    this->port = -1;
 
     // Create the socket
     this->socket_fd = ::socket(family, type, protocol);
@@ -17,7 +18,8 @@ sockets::socket::socket(socket_family family, socket_type type, socket_protocol 
 
     this->address.sin_family = socket_family::IPV4;
     this->address.sin_addr.s_addr = INADDR_ANY;
-    this->address.sin_port = htons(-1);
+    this->address.sin_port = htons(this->port);
+
 }
 
 void sockets::socket::refresh_socket () {
@@ -79,6 +81,7 @@ sockets::socket sockets::socket::accept () {
 void sockets::socket::close () {
     ::close(this->socket_fd);
 }
+
 void sockets::socket::connect () {
     int connection_status = ::connect(this->socket_fd, (sockaddr*)&this->address, sizeof(this->address));
     if (connection_status < 0) {
