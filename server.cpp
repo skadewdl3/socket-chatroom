@@ -5,9 +5,8 @@
 using namespace sockets;
 using namespace std;
 
-void callback (sockets::socket sock, sockets::master_socket master) {
-    cout << "This ran" << endl;
-    cout << sock.receive() << endl;
+void callback (sockets::socket* sock, sockets::master_socket* master) {
+    cout << sock->receive() << endl;
 }
 
 int main() {
@@ -18,8 +17,9 @@ int main() {
     cout << socket.get_socket_fd() << endl;
     socket.bind();
     socket.listen();
-    // auto client = socket.accept();
-    // cout << client.receive() << endl;
+//    auto client = socket.accept();
+//    cout << "Status is " << client.status() << endl;
+//    cout << client.receive() << endl;
     socket.accept_loop(callback);
     socket.close();
 }

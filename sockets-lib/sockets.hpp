@@ -45,7 +45,7 @@ namespace sockets {
     class socket;
     class master_socket;
 
-    typedef void (*accept_loop_callback) (socket, master_socket);
+    typedef void (*accept_loop_callback) (socket*, master_socket*);
 
 
     class socket {

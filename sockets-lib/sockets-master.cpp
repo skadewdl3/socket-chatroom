@@ -29,7 +29,7 @@ sockets::socket sockets::master_socket::accept() {
     }
     cout << endl;
     this->refresh_connections();
-    return new_socket;
+    return this->connections[this->connections.size() - 1];
 }
 
 void sockets::master_socket::accept_loop(sockets::accept_loop_callback callback) {
@@ -43,19 +43,17 @@ void sockets::master_socket::accept_loop(sockets::accept_loop_callback callback)
 
         if (FD_ISSET(this->socket_fd, &this->fds)) {
             this->accept();
+            max_fd = this->refresh_connections();
         }
 
         for (int i = 0; i < this->connections.size(); i++) {
-            sockets::socket sock = this->connections.at(i);
+            socket sock = this->connections[i];
             if (FD_ISSET(sock.get_socket_fd(), &this->fds)) {
-                cout << "Status of client is " << sock.status() << endl;
-                if (sock.status() <= 0) {
-                    sock.close();
-                    this->connections.erase(this->connections.begin() + i);
-                }
-                else {
-                    callback(sock, *this);
-                }
+                callback(&sock, this);
+            }
+            if (sock.status() <= 0) {
+                sock.close();
+                this->connections.erase(this->connections.begin() + i);
             }
         }
     }
@@ -64,3 +62,4 @@ void sockets::master_socket::accept_loop(sockets::accept_loop_callback callback)
 void sockets::master_socket::stop_accepting() {
     this->should_accept = false;
 }
+
