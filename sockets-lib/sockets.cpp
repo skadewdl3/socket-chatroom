@@ -28,7 +28,10 @@ sockets::socket::socket(socket_family family, socket_type type, socket_protocol 
 
     // Create the socket
     this->socket_fd = ::socket(family, type, protocol);
-    if (this->socket_fd < 1) cout << "Error in creating socket" << endl;
+    if (this->socket_fd < 1) {
+        throw sockets::exceptions::SocketCreateException();
+    }
+
     // TODO: Add exception handling
 
     this->address.sin_family = socket_family::IPV4;
@@ -61,6 +64,16 @@ void sockets::socket::set_type (socket_type new_type) {
 
 int sockets::socket::get_socket_fd () {
     return this->socket_fd;
+}
+
+int sockets::socket::get_port () {
+    return this->port;
+}
+
+char* sockets::socket::get_address() {
+    struct in_addr temp;
+    temp.s_addr = this->address.sin_addr.s_addr;
+    return inet_ntoa(temp);
 }
 
 void sockets::socket::set_port (int new_port) {
@@ -106,5 +119,4 @@ void sockets::socket::connect () {
         cout << "Error in connecting" << endl;
     }
 }
-
 

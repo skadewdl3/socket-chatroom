@@ -13,14 +13,9 @@
 #include <sys/types.h>
 #include <netdb.h>
 
-#define INTERNET AF_INET
-
 using namespace std;
 
-
-
 namespace sockets {
-
 
     // Declarations of enums for type, family and protocol options
     enum socket_type {
@@ -45,9 +40,12 @@ namespace sockets {
         UDPLITE = IPPROTO_UDPLITE
     };
 
+    // Forward declarations for classes
     class socket;
     class master_socket;
 
+    // Function type passed to master_socket's
+    // accept_loop method as a callback
     typedef void (*accept_loop_callback) (socket*, master_socket*);
 
 
@@ -80,6 +78,8 @@ namespace sockets {
 
         // Getters
         int get_socket_fd ();
+        int get_port ();
+        char* get_address ();
 
         // Common Functions
         void send (std::string);
@@ -108,10 +108,51 @@ namespace sockets {
     public:
         master_socket (socket_family, socket_type, socket_protocol);
         master_socket (socket_family, socket_type, socket_protocol, char*);
-        socket accept();
+        socket accept() override;
         void stop_accepting ();
         void accept_loop(accept_loop_callback);
     };
+
+    namespace exceptions {
+        class SocketException : std::exception {
+        protected:
+            char *message;
+        public:
+            char *get_message();
+        };
+
+        class SocketCreateException : SocketException {
+        public: SocketCreateException();
+        };
+
+        class SocketBindException : SocketException {
+        public: explicit SocketBindException(sockets::socket);
+        };
+
+        class SocketListenException : SocketException {
+            public: SocketListenException();
+        };
+
+        class SocketAcceptException : SocketException {
+            public: SocketAcceptException();
+        };
+
+        class SocketConnectException : SocketException {
+        public: explicit SocketConnectException(sockets::socket);
+        };
+
+        class SocketSendException : SocketException {
+            public: SocketSendException();
+        };
+
+        class SocketReceiveException : SocketException {
+        public:  explicit SocketReceiveException(sockets::socket);
+        };
+
+        class SocketSetOptionException : SocketException {
+            public: SocketSetOptionException();
+        };
+    }
 
 }
 
